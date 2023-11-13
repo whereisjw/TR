@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { Droppable } from 'react-beautiful-dnd'
 import DraggableCard from './DraggableCard'
 import { styled } from 'styled-components';
@@ -18,6 +18,9 @@ font-weight: bold;
 margin-bottom: 10px;
 font-size: 1.1rem;
 `
+const Area = styled.div`
+  background-color: blue;
+`
 
 interface IBoardProps{
     toDos:string[];
@@ -25,14 +28,25 @@ interface IBoardProps{
 }
 
 const Board = ({toDos,boardId}:IBoardProps) => {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const onClick =()=>{
+    inputRef.current?.focus()
+    setTimeout(() => {
+      inputRef.current?.blur()
+    }, 5000);
+  }
   return (
     <Droppable droppableId={boardId}>
-            {(magic) => (
-              <Wrapper ref={magic.innerRef} {...magic.droppableProps}>
-                <Title>{boardId}</Title>
-            {toDos ? toDos.map((toDo,index)=>(<DraggableCard key={toDo} index={index} toDo={toDo}></DraggableCard>)):null}   
-                {magic.placeholder}
-              </Wrapper>
+            {(magic,snapshot) => (
+                <Wrapper ref={magic.innerRef} {...magic.droppableProps}>
+          
+                  <Title>{boardId}</Title>
+                  <input ref={inputRef} type="text" placeholder='grap me' />
+                  <button onClick={onClick}>click me</button>
+              {toDos ? toDos.map((toDo,index)=>(<DraggableCard key={toDo} index={index} toDo={toDo}></DraggableCard>)):null}   
+                  {magic.placeholder}
+                </Wrapper>
+ 
             )}
           </Droppable>
   )
